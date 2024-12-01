@@ -212,8 +212,8 @@ const ChillGuyEyes = ({ setAuraPoints }: { setAuraPoints: (points: number | ((pr
               <Image 
                 src="/chill-guy.png" 
                 alt="Chill Guy"
-                width={300}
-                height={300}
+                width={100}
+                height={100}
                 className="w-full drop-shadow-2xl relative z-10"
               />
             </motion.div>
