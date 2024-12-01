@@ -1,30 +1,13 @@
 import { motion } from 'framer-motion';
-import { Star, Heart, MessageCircle, X } from 'lucide-react';
+import Image from 'next/image';
 import { VotingSystem } from './VotingSystem';
+import type { Fit } from '@/types';
 import { useState } from 'react';
-
-interface Fit {
-  id: string;
-  image: string;
-  userImage: string;
-  username: string;
-  votes: number;
-  comments: number;
-  description: string;
-}
+import { X } from 'lucide-react';
 
 export const TopRatedFits = ({ onClose }: { onClose: () => void }) => {
-  const [fits, setFits] = useState([
-    {
-      id: '1',
-      image: '/fits/fit1.jpg',
-      userImage: '/avatars/user1.jpg',
-      username: 'sigma_grinder',
-      votes: 1200,
-      comments: 45,
-      description: 'Straight bussin fr fr',
-    },
-    // Add more sample fits
+  const [fits] = useState<Fit[]>([
+    // ... your fits data
   ]);
 
   return (
@@ -71,10 +54,12 @@ export const TopRatedFits = ({ onClose }: { onClose: () => void }) => {
               className="bg-white rounded-lg overflow-hidden shadow-sm"
             >
               <div className="aspect-square relative group">
-                <img 
+                <Image 
                   src={fit.image} 
-                  alt={`Fit by ${fit.username}`}
-                  className="w-full h-full object-cover"
+                  alt={fit.description}
+                  width={400}
+                  height={400}
+                  className="object-cover rounded-lg"
                 />
                 <motion.div 
                   initial={{ opacity: 0 }}

@@ -1,31 +1,30 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
 
-export async function POST(req: Request) {
+export async function POST() {
   try {
-    const { itemId, voteType } = await req.json();
+    // const { itemId, voteType } = await req.json();
     
-    // You'll need to get the userId from the session
-    const userId = 'user_id'; // Replace with actual user ID from auth
+    // // You'll need to get the userId from the session
+    // const userId = 'user_id'; // Replace with actual user ID from auth
     
-    const vote = await prisma.vote.upsert({
-      where: {
-        userId_itemId: {
-          userId,
-          itemId,
-        },
-      },
-      update: {
-        type: voteType,
-      },
-      create: {
-        userId,
-        itemId,
-        type: voteType,
-      },
-    });
+    // const vote = await prisma.vote.upsert({
+    //   where: {
+    //     userId_itemId: {
+    //       userId,
+    //       itemId,
+    //     },
+    //   },
+    //   update: {
+    //     type: voteType,
+    //   },
+    //   create: {
+    //     userId,
+    //     itemId,
+    //     type: voteType,
+    //   },
+    // });
 
-    return NextResponse.json({ success: true, vote });
+    return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Vote error:', error);
     return NextResponse.json(
@@ -35,19 +34,19 @@ export async function POST(req: Request) {
   }
 }
 
-export async function DELETE(req: Request) {
+export async function DELETE() {
   try {
-    const { itemId } = await req.json();
-    const userId = 'user_id'; // Replace with actual user ID from auth
+    // const { itemId } = await req.json();
+    // const userId = 'user_id'; // Replace with actual user ID from auth
 
-    await prisma.vote.delete({
-      where: {
-        userId_itemId: {
-          userId,
-          itemId,
-        },
-      },
-    });
+    // await prisma.vote.delete({
+    //   where: {
+    //     userId_itemId: {
+    //       userId,
+    //       itemId,
+    //     },
+    //   },
+    // });
 
     return NextResponse.json({ success: true });
   } catch (error) {

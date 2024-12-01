@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { useState, useRef, Key } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useDropzone } from "react-dropzone";
 import { 
   Loader2, 
@@ -13,43 +13,44 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { Space_Grotesk } from 'next/font/google';
+// import { Space_Grotesk } from 'next/font/google';
 import { TopRatedFits } from './components/TopRatedFits';
+import Image from 'next/image';
 
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'] });
+// const spaceGrotesk = Space_Grotesk({ subsets: ['latin'] });
 
-const THEME = {
-  primary: {
-    from: 'from-emerald-600',
-    to: 'to-teal-800',
-    text: 'text-emerald-400',
-    hover: 'hover:bg-emerald-800/50',
-    border: 'border-emerald-900/30',
-  },
-  secondary: {
-    from: 'from-teal-900',
-    to: 'to-emerald-900',
-    text: 'text-teal-400',
-  },
-  accent: 'bg-gradient-to-r from-emerald-500 to-teal-500',
-};
+// const THEME = {
+//   primary: {
+//     from: 'from-emerald-600',
+//     to: 'to-teal-800',
+//     text: 'text-emerald-400',
+//     hover: 'hover:bg-emerald-800/50',
+//     border: 'border-emerald-900/30',
+//   },
+//   secondary: {
+//     from: 'from-teal-900',
+//     to: 'to-emerald-900',
+//     text: 'text-teal-400',
+//   },
+//   accent: 'bg-gradient-to-r from-emerald-500 to-teal-500',
+// };
 
 const PARTNERS = [
   {
     name: "Audrey Chen 👩🏻‍💻",
-    logo: "https://placehold.co/200x80/111111/FFFFFF/svg?text=Partner+1",
+    logo: "https://placehold.co/200x80/111111/FFFFFF/svg?text=Audrey Chen",
   },
   {
     name: "Sigmas",
-    logo: "https://placehold.co/200x80/111111/FFFFFF/svg?text=Partner+2",
+    logo: "https://placehold.co/200x80/111111/FFFFFF/svg?text=Sigmas",
   },
   {
     name: "Beta",
-    logo: "https://placehold.co/200x80/111111/FFFFFF/svg?text=Partner+3",
+    logo: "https://placehold.co/200x80/111111/FFFFFF/svg?text=Beta",
   },
   {
     name: "Gigachad developers",
-    logo: "https://placehold.co/200x80/111111/FFFFFF/svg?text=Partner+4",
+    logo: "https://placehold.co/200x80/111111/FFFFFF/svg?text=Gigachad",
   },
 ];
 
@@ -116,7 +117,7 @@ const FloatingPoints = ({ x, y }: { x: number; y: number }) => {
   );
 };
 
-const ChillGuyEyes = ({ setAuraPoints }: { setAuraPoints: (points: number) => void }) => {
+const ChillGuyEyes = ({ setAuraPoints }: { setAuraPoints: (points: number | ((prev: number) => number)) => void }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [auraSize, setAuraSize] = useState(1);
   const [floatingPoints, setFloatingPoints] = useState<{ id: number; x: number; y: number }[]>([]);
@@ -126,13 +127,11 @@ const ChillGuyEyes = ({ setAuraPoints }: { setAuraPoints: (points: number) => vo
   
   const collectAura = (e: React.MouseEvent) => {
     if (isCollecting) return;
-    
     setIsCollecting(true);
-    setAuraPoints(prev => prev + 1000);
+    setAuraPoints((prev: number) => prev + 1000);
     
     const rect = containerRef.current?.getBoundingClientRect();
     if (!rect) return;
-    
     setFloatingPoints(prev => [...prev, { 
       id: pointsIdRef.current++, 
       x: rect.left + rect.width / 2,
@@ -210,9 +209,11 @@ const ChillGuyEyes = ({ setAuraPoints }: { setAuraPoints: (points: number) => vo
                 damping: 30
               }}
             >
-              <img 
+              <Image 
                 src="/chill-guy.png" 
                 alt="Chill Guy"
+                width={300}
+                height={300}
                 className="w-full drop-shadow-2xl relative z-10"
               />
             </motion.div>
@@ -292,9 +293,11 @@ const Wardrobe = ({ showWardrobe, setShowWardrobe, personImage }: {
                     whileHover={{ scale: 1.1 }}
                     className="aspect-square bg-gradient-to-br from-red-900/20 to-purple-900/20 rounded-lg p-4"
                   >
-                    <img 
+                    <Image 
                       src={item.image} 
                       alt={item.name}
+                      width={300}
+                      height={300}
                       className="w-full h-full object-contain"
                     />
                   </motion.div>
@@ -318,7 +321,7 @@ const Wardrobe = ({ showWardrobe, setShowWardrobe, personImage }: {
 
 const Sidebar = ({ showSidebar, setShowSidebar }: { showSidebar: boolean, setShowSidebar: (show: boolean) => void }) => {
   const blindCount = 12;
-  const [showTopRated, setShowTopRated] = useState(false);
+  const [ setShowTopRated] = useState(false);
   
   return (
     <AnimatePresence mode="wait">
@@ -390,7 +393,7 @@ const Sidebar = ({ showSidebar, setShowSidebar }: { showSidebar: boolean, setSho
                              border border-neutral-200/20 hover:border-[#FF5722]/20 transition-colors"
                   >
                     <button 
-                      onClick={() => setShowTopRated(true)}
+                    //   onClick={() => setShowTopRated(False)}
                       className="font-medium text-[#FF5722] w-full text-left"
                     >
                       Top Rated
@@ -461,7 +464,8 @@ const Partners = () => {
                 key={partner.name}
                 src={partner.logo}
                 alt={partner.name}
-                className="h-6 opacity-50 hover:opacity-100 transition-opacity"
+                
+                className="h-[50] text-ellipsis opacity-50 hover:opacity-100 transition-opacity"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 0.5, y: 0 }}
                 transition={{ delay: 0.1 * i }}
@@ -557,7 +561,7 @@ const FitAnalysis = ({ feedback }: { feedback: any }) => {
       animate={{ opacity: 1, y: 0 }}
       className="bg-white/10 backdrop-blur-sm border border-neutral-200/20 p-8 rounded-lg"
     >
-      {sections.map((section, idx) => {
+      {sections.map((section: string, idx: Key | null | undefined) => {
         const isRating = section.includes('/10');
         const isImprovements = section.includes('How to Make it More');
         
@@ -566,8 +570,8 @@ const FitAnalysis = ({ feedback }: { feedback: any }) => {
             key={idx}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: idx * 0.1 }}
-            className={`mb-6 ${idx !== 0 ? 'border-t border-neutral-200/10 pt-6' : ''}`}
+            transition={{ delay: idx !== null && idx !== undefined ? (idx as number) * 0.1 : 0 }}
+            className={`mb-6 ${idx !== null && idx !== undefined && idx !== 0 ? 'border-t border-neutral-200/10 pt-6' : ''}`}
           >
             {isRating ? (
               // Rating Display
@@ -638,7 +642,7 @@ export default function SigmaRealm() {
   const [showWardrobe, setShowWardrobe] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const [auraPoints, setAuraPoints] = useState(0);
-  const [personImage, setPersonImage] = useState<string | null>(null);
+  const [setPersonImage] = useState<string | null>(null);
   const [showTopRated, setShowTopRated] = useState(false);
 
   const occasions = [
@@ -656,7 +660,6 @@ export default function SigmaRealm() {
       const reader = new FileReader();
       reader.onload = () => {
         setImage(reader.result as string);
-        setPersonImage(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
@@ -824,7 +827,13 @@ export default function SigmaRealm() {
                              hover:border-[#FF5722]/50 transition-colors bg-white/5 backdrop-blur-sm">
                   <input {...getInputProps()} />
                   {image ? (
-                    <img src={image} alt="Your fit" className="max-h-[400px] w-auto mx-auto" />
+                    <Image 
+                      src={image} 
+                      alt="Your fit" 
+                      width={400}
+                      height={400}
+                      className="max-h-[400px] w-auto mx-auto object-contain"
+                    />
                   ) : (
                     <div className="flex flex-col items-center space-y-4 py-12">
                       <Shield className="w-16 h-16 text-[#FF5722]" />

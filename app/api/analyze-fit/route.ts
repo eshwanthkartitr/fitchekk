@@ -30,9 +30,11 @@ export async function POST(req: Request) {
         error: 'No image provided' 
       }, { status: 400 })
     }
+    
+    let analysis = "simple test"
 
     try {
-      let analysis: string
+      
 
       if (useGemini) {
         console.log('Using Gemini API...')
@@ -56,8 +58,8 @@ export async function POST(req: Request) {
             parts: [
               { text: prompt },
               {
-                inline_data: {
-                  mime_type: imageFile.type,
+                inlineData: {
+                  mimeType: imageFile.type,
                   data: Buffer.from(imageBytes).toString('base64')
                 }
               }
@@ -101,9 +103,13 @@ export async function POST(req: Request) {
           ],
           max_tokens: 500
         })
-
-        analysis = chatCompletion.choices[0].message.content
-        console.log('Hugging Face response:', analysis)
+        
+        if (chatCompletion.choices[0].message.content) {
+          analysis = chatCompletion.choices[0].message.content
+          console.log('Hugging Face response:', analysis)
+        } else {
+          console.error('Hugging Face response content is undefined')
+        }
       }
 
       // Clean up the analysis text
@@ -159,20 +165,7 @@ function generateFeedback(analysisText: string, occasion: string) {
   }
 }
 
-function extractSuggestions(text: string): string {
-  const suggestionIndicators = ['could', 'should', 'suggest', 'try', 'consider', 'recommend', 'improve']
-  const sentences = text.split(/[.!?]+/)
-  
-  const suggestions = sentences.filter(sentence => 
-    suggestionIndicators.some(indicator => 
-      sentence.toLowerCase().includes(indicator)
-    )
-  )
-  
-  return suggestions.length > 0 
-    ? suggestions.join('. ').trim() 
-    : "Consider upgrading elements for more impact"
-}
+
 
 function calculateDominanceScore(text: string): number {
   const dominanceTerms = [
