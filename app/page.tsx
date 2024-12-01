@@ -1,101 +1,211 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { motion, AnimatePresence } from "framer-motion";
+import { SparklesCore } from "../components/ui/sparkles";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+
+export default function VibeCheck() {
+  const router = useRouter();
+  const [selectedVibe, setSelectedVibe] = useState<string | null>(null);
+  const [showBetaConfirm, setShowBetaConfirm] = useState(false);
+  const [showSigmaMessage, setShowSigmaMessage] = useState(false);
+  const [betaSeizure, setBetaSeizure] = useState(false);
+
+  const handleSelection = (choice: string) => {
+    if (choice === "beta" && !showBetaConfirm) {
+      setShowBetaConfirm(true);
+      return;
+    }
+
+    setSelectedVibe(choice);
+    localStorage.setItem("userVibe", choice);
+    
+    if (choice === "sigma") {
+      setShowSigmaMessage(true);
+      document.body.classList.add('warp-speed');
+      document.querySelectorAll('.sparkle').forEach((particle: any) => {
+        particle.style.transformOrigin = 'center center';
+        particle.classList.add('particle-ray');
+      });
+      setTimeout(() => {
+        router.push("/sigma-realm");
+      }, 2500);
+    } else {
+      setBetaSeizure(true);
+      document.body.classList.add('reality-distortion');
+      document.body.classList.add('brain-melt');
+      setTimeout(() => {
+        document.body.classList.add('beta-psychedelic');
+      }, 500);
+      setTimeout(() => {
+        router.push("/beta-realm");
+      }, 3000);
+    }
+  };
+
+  // Clean up effects on unmount
+  useEffect(() => {
+    return () => {
+      document.body.classList.remove('warp-speed', 'reality-distortion', 'brain-melt', 'beta-psychedelic');
+    };
+  }, []);
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
+    <div className="h-[100vh] relative w-full bg-black flex flex-col items-center justify-center overflow-hidden">
+      <div className="w-full absolute inset-0 h-screen">
+        <SparklesCore
+          id="tsparticles"
+          background="transparent"
+          minSize={0.6}
+          maxSize={1.4}
+          particleDensity={100}
+          className="w-full h-full particles-container"
+          particleColor="#FFFFFF"
         />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+      </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      {/* Main Content */}
+      <div className="relative z-20 flex flex-col items-center justify-center">
+        <motion.h1 
+          className="md:text-7xl text-5xl lg:text-6xl font-bold text-center text-slate-200 mb-12"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
+          Choose Your Destiny 
+        </motion.h1>
+
+        <motion.div 
+          className="flex flex-col md:flex-row gap-8 justify-center items-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+        >
+          {/* Sigma Button */}
+          <motion.button
+            className="inline-flex h-16 animate-shimmer items-center justify-center rounded-md border border-slate-800 bg-[linear-gradient(110deg,#1a1a1a,45%,#262626,55%,#1a1a1a)] bg-[length:200%_100%] px-12 font-bold text-2xl text-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => handleSelection("sigma")}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            🗿 Sigma 
+          </motion.button>
+
+          {/* Beta Button */}
+          <motion.button
+            className="inline-flex h-16 animate-shimmer items-center justify-center rounded-md border border-slate-800 bg-[linear-gradient(110deg,#1a1a1a,45%,#262626,55%,#1a1a1a)] bg-[length:200%_100%] px-12 font-bold text-2xl text-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => handleSelection("beta")}
           >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+            🤓 Beta 
+          </motion.button>
+        </motion.div>
+
+        {/* Beta Confirmation Modal */}
+        <AnimatePresence>
+          {showBetaConfirm && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.5 }}
+              className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            >
+              <div className="bg-black p-8 rounded-lg border border-blue-500 text-center">
+                <h2 className="text-2xl font-bold text-white mb-4">Choose Carefully</h2>
+                <p className="text-blue-400 mb-6">Are you sure you want to remain in the Beta realm?</p>
+                <div className="flex gap-4 justify-center">
+                  <button
+                    onClick={() => handleSelection("beta")}
+                    className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                  >
+                    Confirm Beta
+                  </button>
+                  <button
+                    onClick={() => setShowBetaConfirm(false)}
+                    className="px-6 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Sigma Message Flash */}
+        <AnimatePresence>
+          {showSigmaMessage && (
+            <motion.div
+              initial={{ opacity: 0, scale: 2 }}
+              animate={{ opacity: [0, 1, 1, 0], scale: [2, 1, 1, 0.5] }}
+              transition={{ duration: 2, times: [0, 0.3, 0.7, 1] }}
+              className="fixed inset-0 flex items-center justify-center z-50"
+            >
+              <div className="text-6xl font-bold text-purple-500 text-center">
+                CERTIFIED SIGMA<br/>
+                <span className="text-3xl">Entering Sigma Realm...</span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Beta Seizure Effect */}
+        <AnimatePresence>
+          {betaSeizure && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ 
+                opacity: [0, 1, 1, 1, 0],
+                scale: [1, 1.2, 1.5, 2, 2.5],
+              }}
+              transition={{ 
+                duration: 3,
+                times: [0, 0.2, 0.4, 0.6, 1],
+                ease: "easeInOut"
+              }}
+              className="fixed inset-0 z-50 beta-seizure-container"
+            >
+              <div className="absolute inset-0 grid grid-cols-3 grid-rows-3 gap-1">
+                {Array(9).fill(0).map((_, i) => (
+                  <div 
+                    key={i}
+                    className="beta-image-container overflow-hidden"
+                    style={{ 
+                      animationDelay: `${i * 0.1}s`,
+                      transform: `rotate(${Math.random() * 360}deg)`
+                    }}
+                  />
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Enhanced Selection Effect */}
+        {selectedVibe && (
+          <motion.div
+            initial={{ scale: 0, x: "-50%", y: "-50%" }}
+            animate={{ 
+              scale: [0, 1, 40],
+              rotate: selectedVibe === "beta" ? [0, 180, 720] : 0
+            }}
+            transition={{ 
+              duration: 2.5,
+              times: [0, 0.3, 1],
+              ease: "easeInOut"
+            }}
+            className={`fixed top-1/2 left-1/2 w-[500px] h-[500px] pointer-events-none ${
+              selectedVibe === "sigma" ? "bg-slate-800" : "bg-slate-900"
+            }`}
+            style={{ 
+              borderRadius: "50%",
+              zIndex: 100 
+            }}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        )}
+      </div>
     </div>
   );
 }
